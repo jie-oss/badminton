@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eef4fa">
+  <title>🏸 羽毛球双打轮转配对</title>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(160deg, #eef4fa, #e8f5e9);
+      color: #1f2d3d;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto
+    }
+
+    header {
+      text-align: center;
+      margin: 6px 0 20px
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      letter-spacing: .5px
+    }
+
+    header p {
+      margin: 0;
+      color: #7a8a99;
+      font-size: 13px;
+      line-height: 1.5
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(20, 40, 70, .07);
+      margin-bottom: 16px
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: #5b6d7e;
+      font-weight: 600;
+      letter-spacing: .5px
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    input[type=text],
+    input[type=number],
+    select {
+      border: 1px solid #d8e0e8;
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-size: 16px;
+      outline: none;
+      font-family: inherit;
+      background: #fbfdff;
+      color: #1f2d3d;
+      transition: border-color .15s, box-shadow .15s;
+      min-height: 44px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #4caf50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, .15);
+      background: #fff
+    }
+
+    select {
+      cursor: pointer;
+      padding-right: 6px
+    }
+
+    label {
+      font-size: 14px;
+      color: #5b6d7e;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .param-item input {
+      width: 56px
+    }
+
+    button {
+      border: none;
+      border-radius: 9px;
+      min-height: 44px;
+      padding: 0 16px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: #4caf50;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(76, 175, 80, .3)
+    }
+
+    .btn-primary:hover {
+      background: #43a047
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      background: #3d9140
+    }
+
+    .btn-ghost {
+      background: #eef2f7;
+      color: #4a5b6b
+    }
+
+    .btn-ghost:hover {
+      background: #e3e9f0
+    }
+
+    .btn-ghost:active {
+      background: #dbe2ea
+    }
+
+    .btn-danger {
+      background: #fff0f0;
+      color: #e05555
+    }
+
+    .btn-danger:hover {
+      background: #ffe4e4
+    }
+
+    .btn-danger:active {
+      background: #ffd9d9
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 5px 8px 5px 13px;
+      font-size: 14px;
+      margin: 5px 5px 0 0;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .chip.m {
+      background: #eef4ff;
+      color: #1e5aa8;
+      border-color: #dbe8ff
+    }
+
+    .chip.f {
+      background: #fdeef5;
+      color: #b0376b;
+      border-color: #fbdceb
+    }
+
+    .chip button {
+      min-height: 0;
+      height: 24px;
+      width: 24px;
+      padding: 0;
+      border-radius: 50%;
+      background: none;
+      color: #b8c5d1;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .chip button:hover {
+      color: #e05555;
+      background: rgba(0, 0, 0, .04)
+    }
+
+    .pn {
+      font-weight: 600;
+      white-space: nowrap
+    }
+
+    .pn.m {
+      color: #1e5aa8
+    }
+
+    .pn.f {
+      color: #c2185b
+    }
+
+    .pn::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: 1px
+    }
+
+    .pn.m::before {
+      background: #4a90d9
+    }
+
+    .pn.f::before {
+      background: #e874a4
+    }
+
+    .round {
+      border: 1px solid #e8eef4;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: #fbfdff
+    }
+
+    .round:last-child {
+      margin-bottom: 0
+    }
+
+    .round-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4caf50;
+      margin-bottom: 8px;
+      letter-spacing: .8px
+    }
+
+    .court {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 7px 0;
+      border-top: 1px dashed #eaf0f6
+    }
+
+    .court:first-of-type {
+      border-top: none;
+      padding-top: 0
+    }
+
+    .cname {
+      font-size: 12px;
+      color: #9aa9b7;
+      min-width: 50px
+    }
+
+    .team {
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 14px;
+      font-weight: 500
+    }
+
+    .team.ta {
+      background: #eef4ff
+    }
+
+    .team.tb {
+      background: #fff3ec
+    }
+
+    .vs {
+      font-size: 11px;
+      color: #b6c3ce;
+      font-weight: 800;
+      letter-spacing: 1px
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap
+    }
+
+    th {
+      color: #93a3b1;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .5px
+    }
+
+    tbody tr:hover {
+      background: #fbfdff
+    }
+
+    td b {
+      color: #2e7d32
+    }
+
+    .fair {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #5b6d7e;
+      background: #f2f9f2;
+      border-radius: 9px;
+      padding: 9px 12px;
+      line-height: 1.7
+    }
+
+    .fair .cov {
+      display: inline-block;
+      margin-right: 14px;
+      white-space: nowrap
+    }
+
+    .fair .cov b {
+      color: #2e7d32
+    }
+
+    .fair .warn {
+      color: #c0392b
+    }
+
+    .empty {
+      color: #9aa9b7;
+      font-size: 14px;
+      text-align: center;
+      padding: 18px
+    }
+
+    .legend {
+      font-size: 12px;
+      color: #9aa9b7;
+      margin-top: 10px
+    }
+
+    .legend .pn {
+      font-size: 12px
+    }
+
+    @media (max-width:640px) {
+      body {
+        padding: 10px 10px calc(12px + env(safe-area-inset-bottom, 0px))
+      }
+
+      header {
+        margin: 2px 0 14px
+      }
+
+      header h1 {
+        font-size: 19px
+      }
+
+      header p {
+        font-size: 12px
+      }
+
+      .card {
+        padding: 14px 12px;
+        border-radius: 12px;
+        margin-bottom: 12px
+      }
+
+      .card h2 {
+        font-size: 13px;
+        margin-bottom: 10px
+      }
+
+      .row {
+        gap: 8px
+      }
+
+      #nameInput {
+        flex: 1 1 100%;
+        min-width: 0
+      }
+
+      .row select {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding-left: 8px
+      }
+
+      .param-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        align-items: stretch
+      }
+
+      .param-row label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        background: #f7fafc;
+        border: 1px solid #e8eef4;
+        border-radius: 10px;
+        padding: 5px 6px 5px 12px;
+        font-size: 14px;
+        min-height: 48px;
+        margin: 0;
+      }
+
+      .param-row label input {
+        width: 48px;
+        border: none;
+        background: #fff;
+        text-align: center;
+        padding: 8px 4px;
+        min-height: 38px;
+        border-radius: 7px;
+      }
+
+      #genBtn {
+        grid-column: 1 / -1;
+        min-height: 48px;
+        width: 100%;
+        font-size: 15px
+      }
+
+      .round {
+        padding: 10px
+      }
+
+      .court {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: "cn cn cn" "a vs b";
+        gap: 6px 8px;
+        padding: 9px 0;
+      }
+
+      .cname {
+        grid-area: cn;
+        min-width: 0;
+        font-size: 11px
+      }
+
+      .team.ta {
+        grid-area: a
+      }
+
+      .team.tb {
+        grid-area: b
+      }
+
+      .vs {
+        grid-area: vs;
+        align-self: center
+      }
+
+      .team {
+        font-size: 13px;
+        padding: 8px 6px;
+        text-align: center;
+        line-height: 1.4;
+        overflow-wrap: anywhere
+      }
+
+      .pn {
+        white-space: normal
+      }
+
+      .table-wrap {
+        margin: 0 -4px
+      }
+
+      table {
+        font-size: 13px
+      }
+
+      th,
+      td {
+        padding: 8px 7px
+      }
+
+      th {
+        font-size: 11px
+      }
+
+      .fair {
+        font-size: 12px
+      }
+    }
+
+    @media (max-width:360px) {
+
+      #addBtn,
+      #demoBtn,
+      #clearBtn {
+        padding: 0 11px;
+        font-size: 14px
+      }
+
+      .team {
+        font-size: 12px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🏸 羽毛球双打轮转配对</h1>
+      <p>休息组合全覆盖 · 连打/连休约束 · 新搭档/新对手优先 · 不重复完整对局</p>
+    </header>
+
+    <div class="card">
+      <h2>① 球员名单</h2>
+      <div class="row">
+        <input type="text" id="nameInput" placeholder="输入球员名字" autocomplete="off" autocapitalize="off">
+        <select id="genderSel" title="性别">
+          <option value="m">男 ♂</option>
+          <option value="f">女 ♀</option>
+        </select>
+        <button class="btn-primary" id="addBtn">添加</button>
+        <button class="btn-ghost" id="demoBtn">示例</button>
+        <button class="btn-danger" id="clearBtn">清空</button>
+      </div>
+      <div id="playerList" style="margin-top:6px"></div>
+      <div class="legend">
+        <span class="pn m">男球员</span> &nbsp;&nbsp; <span class="pn f">女球员</span>
+      </div>
+      <div id="playerCount" style="margin-top:10px;font-size:13px;color:#9aa9b7"></div>
+    </div>
+
+    <div class="card">
+      <h2>② 参数设置</h2>
+      <div class="row param-row">
+        <label class="param-item">场地数 <input type="number" id="courtCount" value="1" min="1" max="10"
+            inputmode="numeric"></label>
+        <label class="param-item">轮数 <input type="number" id="roundCount" value="5" min="1" max="100"
+            inputmode="numeric"></label>
+        <label class="param-item">最多连打 <input type="number" id="maxConsec" value="2" min="0" max="20"
+            inputmode="numeric"></label>
+        <label class="param-item">最多连休 <input type="number" id="maxRest" value="2" min="0" max="20"
+            inputmode="numeric"></label>
+        <button class="btn-primary" id="genBtn">生成对阵</button>
+      </div>
+      <div id="hint" style="margin-top:10px;font-size:13px;color:#9aa9b7;line-height:1.6"></div>
+    </div>
+
+    <div class="card" id="resultCard" style="display:none">
+      <h2>③ 对阵安排</h2>
+      <div id="resultArea"></div>
+    </div>
+
+    <div class="card" id="statsCard" style="display:none">
+      <h2>④ 上场统计</h2>
+      <div id="statsArea"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var $ = function (id) { return document.getElementById(id); };
+      function esc(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      // ---------- 球员数据 ----------
+      var DEMO = [
+        { name: '张三', gender: 'm' }, { name: '李四', gender: 'm' },
+        { name: '王五', gender: 'm' }, { name: '赵六', gender: 'm' },
+        { name: '钱七', gender: 'f' }, { name: '孙八', gender: 'f' },
+        { name: '周九', gender: 'f' }, { name: '吴十', gender: 'f' }
+      ];
+
+      function normalizePlayers(arr) {
+        if (!Array.isArray(arr)) return null;
+        return arr.map(function (p) {
+          if (typeof p === 'string') return { name: p, gender: 'm' };
+          if (p && typeof p === 'object' && p.name) {
+            return { name: String(p.name), gender: p.gender === 'f' ? 'f' : 'm' };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+
+      var players = [];
+      try {
+        var saved = localStorage.getItem('bdm_players_v2');
+        if (saved !== null) {
+          players = normalizePlayers(JSON.parse(saved)) || [];
+        } else {
+          var old = localStorage.getItem('bdm_players_v1');
+          var migrated = old !== null ? normalizePlayers(JSON.parse(old)) : null;
+          players = migrated && migrated.length ? migrated : DEMO.slice();
+        }
+      } catch (e) { players = DEMO.slice(); }
+      if (!Array.isArray(players)) players = [];
+
+      function savePlayers() {
+        try { localStorage.setItem('bdm_players_v2', JSON.stringify(players)); } catch (e) { }
+      }
+
+      function nameTag(p) {
+        if (!p) return '';
+        return '<span class="pn ' + (p.gender === 'f' ? 'f' : 'm') + '">' + esc(p.name) + '</span>';
+      }
+
+      // ---------- 界面 ----------
+      function renderPlayers() {
+        var list = $('playerList');
+        if (players.length === 0) {
+          list.innerHTML = '<div class="empty">还没有球员，先添加吧～</div>';
+        } else {
+          list.innerHTML = players.map(function (p, i) {
+            return '<span class="chip ' + (p.gender === 'f' ? 'f' : 'm') + '">' + esc(p.name) +
+              '<button data-i="' + i + '" aria-label="删除' + esc(p.name) + '">×</button></span>';
+          }).join('');
+          Array.prototype.forEach.call(list.querySelectorAll('button'), function (btn) {
+            btn.onclick = function () {
+              players.splice(+btn.dataset.i, 1);
+              renderPlayers(); savePlayers();
+            };
+          });
+        }
+        var male = players.filter(function (p) { return p.gender !== 'f'; }).length;
+        var female = players.length - male;
+        $('playerCount').textContent = '共 ' + players.length + ' 名球员（男 ' + male + ' · 女 ' + female + '）';
+        updateHint();
+      }
+
+      function combCount(n, k) {
+        if (k < 0 || k > n) return 0;
+        if (k === 0 || k === n) return 1;
+        if (k > n - k) k = n - k;
+        var result = 1;
+        for (var i = 0; i < k; i++) {
+          result = result * (n - i) / (i + 1);
+          if (result > 200000) return result;
+        }
+        return Math.round(result);
+      }
+
+      function updateHint() {
+        var n = players.length;
+        var courts = Math.max(1, parseInt($('courtCount').value, 10) || 1);
+        var per = courts * 4;
+        var rest = n - per;
+        var maxC = parseInt($('maxConsec').value, 10);
+        if (isNaN(maxC) || maxC < 0) maxC = 0;
+        var maxR = parseInt($('maxRest').value, 10);
+        if (isNaN(maxR) || maxR < 0) maxR = 0;
+
+        var hint = $('hint');
+        if (n < 4) { hint.textContent = '⚠️ 至少需要 4 名球员才能打双打'; return; }
+        if (per > n) { hint.textContent = '⚠️ 每轮需要 ' + per + ' 人上场，但只有 ' + n + ' 人，请减少场地数'; return; }
+
+        var parts = [];
+        if (rest > 0) {
+          var total = combCount(n, rest);
+          if (total <= 5000) {
+            parts.push('休息组合池：共 ' + total + ' 种可能');
+          } else {
+            parts.push('休息组合数 ' + total + ' 过多，将使用动态均衡选人');
+          }
+          parts.push('每轮 ' + rest + ' 人轮休');
+        } else {
+          parts.push('每轮全员上场（无轮休）');
+        }
+        if (maxC > 0) parts.push('连打≤' + maxC);
+        if (maxR > 0 && rest > 0) parts.push('连休≤' + maxR);
+        hint.textContent = parts.join(' · ');
+      }
+
+      function addPlayer() {
+        var v = $('nameInput').value.trim();
+        if (!v) return;
+        if (players.some(function (p) { return p.name === v; })) {
+          alert('「' + v + '」已在名单中'); return;
+        }
+        players.push({ name: v, gender: $('genderSel').value === 'f' ? 'f' : 'm' });
+        $('nameInput').value = '';
+        renderPlayers(); savePlayers();
+        if (window.innerWidth > 640) $('nameInput').focus();
+      }
+
+      $('addBtn').onclick = addPlayer;
+      $('nameInput').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); addPlayer(); }
+      });
+      $('demoBtn').onclick = function () {
+        DEMO.forEach(function (d) {
+          if (!players.some(function (p) { return p.name === d.name; })) {
+            players.push({ name: d.name, gender: d.gender });
+          }
+        });
+        renderPlayers(); savePlayers();
+      };
+      $('clearBtn').onclick = function () {
+        if (!players.length) return;
+        if (confirm('确定清空所有球员吗？')) { players = []; renderPlayers(); savePlayers(); }
+      };
+      ['courtCount', 'maxConsec', 'maxRest'].forEach(function (id) {
+        $(id).addEventListener('input', updateHint);
+        $(id).addEventListener('change', updateHint);
+      });
+
+      // ================= 核心算法 =================
+
+      var W_PARTNER_NEW = 60;
+      var W_PARTNER_REPEAT = 100;
+      var W_OPP_NEW = 15;
+      var W_OPP_REPEAT = 10;
+      var W_MATCH_REPEAT = 1000000;
+
+      function matchSig(a, b, c, d) {
+        var t1a = a < b ? a : b, t1b = a < b ? b : a;
+        var t2a = c < d ? c : d, t2b = c < d ? d : c;
+        var s1 = t1a + ',' + t1b;
+        var s2 = t2a + ',' + t2b;
+        return s1 < s2 ? s1 + '|' + s2 : s2 + '|' + s1;
+      }
+
+      function courtCost(a, b, c, d, partner, opp, sigSet, tempSigs) {
+        var cost = 0;
+        var pc1 = partner[a][b];
+        var pc2 = partner[c][d];
+        cost += pc1 === 0 ? -W_PARTNER_NEW : pc1 * pc1 * W_PARTNER_REPEAT;
+        cost += pc2 === 0 ? -W_PARTNER_NEW : pc2 * pc2 * W_PARTNER_REPEAT;
+
+        var oppPairs = [[a, c], [a, d], [b, c], [b, d]];
+        for (var i = 0; i < 4; i++) {
+          var oc = opp[oppPairs[i][0]][oppPairs[i][1]];
+          cost += oc === 0 ? -W_OPP_NEW : oc * oc * W_OPP_REPEAT;
+        }
+
+        var sig = matchSig(a, b, c, d);
+        if (sigSet.has(sig) || (tempSigs && tempSigs.has(sig))) cost += W_MATCH_REPEAT;
+        return cost;
+      }
+
+      function genAllPairings(list) {
+        var n = list.length;
+        var result = [];
+        var used = new Array(n).fill(false);
+        var cur = [];
+
+        function rec() {
+          var first = -1;
+          for (var i = 0; i < n; i++) { if (!used[i]) { first = i; break; } }
+          if (first === -1) { result.push(cur.map(function (g) { return g.slice(); })); return; }
+          used[first] = true;
+          var a = list[first];
+          for (var i = first + 1; i < n; i++) {
+            if (used[i]) continue;
+            used[i] = true;
+            var b = list[i];
+            for (var j = first + 1; j < n; j++) {
+              if (used[j]) continue;
+              used[j] = true;
+              var c = list[j];
+              for (var k = j + 1; k < n; k++) {
+                if (used[k]) continue;
+                used[k] = true;
+                cur.push([a, b, c, list[k]]);
+                rec();
+                cur.pop();
+                used[k] = false;
+              }
+              used[j] = false;
+            }
+            used[i] = false;
+          }
+          used[first] = false;
+        }
+
+        rec();
+        return result;
+      }
+
+      function bestPairingExact(sel, partner, opp, sigSet) {
+        var all = genAllPairings(sel);
+        var best = null, bestCost = Infinity;
+        for (var i = 0; i < all.length; i++) {
+          var pairing = all[i];
+          var cost = 0;
+          for (var k = 0; k < pairing.length; k++) {
+            var g = pairing[k];
+            cost += courtCost(g[0], g[1], g[2], g[3], partner, opp, sigSet, null);
+          }
+          if (cost < bestCost) { bestCost = cost; best = pairing; }
+        }
+        return best || [];
+      }
+
+      function greedyPairing(sel, partner, opp, sigSet) {
+        var pool = sel.slice();
+        var out = [];
+        var tempSigs = new Set();
+
+        while (pool.length >= 4) {
+          var best = null, bestCost = Infinity;
+          var m = pool.length;
+
+          for (var i = 0; i < m; i++) {
+            for (var j = i + 1; j < m; j++) {
+              for (var k = j + 1; k < m; k++) {
+                for (var l = k + 1; l < m; l++) {
+                  var a = pool[i], b = pool[j], c = pool[k], d = pool[l];
+                  var opts = [[a, b, c, d], [a, c, b, d], [a, d, b, c]];
+                  for (var t = 0; t < 3; t++) {
+                    var g = opts[t];
+                    var cost = courtCost(g[0], g[1], g[2], g[3], partner, opp, sigSet, tempSigs);
+                    if (cost < bestCost) { bestCost = cost; best = { idx: [i, j, k, l], court: g }; }
+                  }
+                }
+              }
+            }
+          }
+
+          if (!best) break;
+          out.push(best.court);
+          tempSigs.add(matchSig(best.court[0], best.court[1], best.court[2], best.court[3]));
+          best.idx.sort(function (x, y) { return y - x; }).forEach(function (idx) { pool.splice(idx, 1); });
+        }
+        return out;
+      }
+
+      function formCourts(sel, partner, opp, sigSet) {
+        if (sel.length <= 8) return bestPairingExact(sel, partner, opp, sigSet);
+        return greedyPairing(sel, partner, opp, sigSet);
+      }
+
+      // ---------- 组合池（源自 Java 算法） ----------
+      function generateCombinations(n, k, MAX) {
+        var result = [];
+        if (k === 0) { result.push([]); return result; }
+        if (k > n) return result;
+        var cur = [];
+        function rec(start) {
+          if (result.length >= MAX) return;
+          if (cur.length === k) { result.push(cur.slice()); return; }
+          var remain = k - cur.length;
+          for (var i = start; i <= n - remain; i++) {
+            cur.push(i);
+            rec(i + 1);
+            cur.pop();
+            if (result.length >= MAX) return;
+          }
+        }
+        rec(0);
+        return result;
+      }
+
+      // ---------- 选人 ----------
+      // 核心：优先从休息组合池中选“使用次数最少、且不违反连打/连休”的组合
+      function selectPlayers(n, pc, playStreak, restStreak, perRound, maxConsec, maxRest, pool, poolUsed) {
+        var restCount = n - perRound;
+        var i;
+        if (restCount <= 0) {
+          var all = [];
+          for (i = 0; i < n; i++) all.push(i);
+          return all;
+        }
+
+        if (pool && pool.length > 0) {
+          var bestIdx = -1;
+          var bestScore = null;
+
+          for (var pi = 0; pi < pool.length; pi++) {
+            var combo = pool[pi];
+            var restSet = {};
+            for (i = 0; i < combo.length; i++) restSet[combo[i]] = true;
+
+            var valid = true;
+            var violation = 0;
+            var sumPc = 0;
+            for (i = 0; i < n; i++) {
+              if (restSet[i]) {
+                sumPc += pc[i];
+                if (maxRest > 0 && restStreak[i] + 1 > maxRest) {
+                  valid = false;
+                  violation += restStreak[i] + 1 - maxRest;
+                }
+              } else {
+                if (maxConsec > 0 && playStreak[i] + 1 > maxConsec) {
+                  valid = false;
+                  violation += playStreak[i] + 1 - maxConsec;
+                }
+              }
+            }
+
+            var score = [valid ? 0 : 1, violation, poolUsed[pi], -sumPc, pi];
+            if (bestScore === null || compareScore(score, bestScore) < 0) {
+              bestScore = score;
+              bestIdx = pi;
+            }
+          }
+
+          poolUsed[bestIdx]++;
+          var chosen = pool[bestIdx];
+          var chosenSet = {};
+          for (i = 0; i < chosen.length; i++) chosenSet[chosen[i]] = true;
+          var sel = [];
+          for (i = 0; i < n; i++) if (!chosenSet[i]) sel.push(i);
+          return sel;
+        }
+
+        // 回退：无池时的贪心选人（保留原有逻辑）
+        var restSet2 = new Array(n).fill(false);
+        var restArr = [];
+        if (maxConsec > 0) {
+          var mustRest = [];
+          for (i = 0; i < n; i++) if (playStreak[i] >= maxConsec) mustRest.push(i);
+          mustRest.sort(function (a, b) {
+            if (playStreak[b] !== playStreak[a]) return playStreak[b] - playStreak[a];
+            if (pc[b] !== pc[a]) return pc[b] - pc[a];
+            return a - b;
+          });
+          for (var k = 0; k < mustRest.length && restArr.length < restCount; k++) {
+            restSet2[mustRest[k]] = true;
+            restArr.push(mustRest[k]);
+          }
+        }
+        if (restArr.length < restCount) {
+          var remaining = [];
+          for (i = 0; i < n; i++) if (!restSet2[i]) remaining.push(i);
+          remaining.sort(function (a, b) {
+            if (pc[b] !== pc[a]) return pc[b] - pc[a];
+            if (playStreak[b] !== playStreak[a]) return playStreak[b] - playStreak[a];
+            if (restStreak[a] !== restStreak[b]) return restStreak[a] - restStreak[b];
+            return a - b;
+          });
+          for (var k2 = 0; k2 < remaining.length && restArr.length < restCount; k2++) {
+            restSet2[remaining[k2]] = true;
+            restArr.push(remaining[k2]);
+          }
+        }
+        var sel2 = [];
+        for (i = 0; i < n; i++) if (!restSet2[i]) sel2.push(i);
+        return sel2;
+      }
+
+      function compareScore(a, b) {
+        for (var i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) return a[i] - b[i];
+        }
+        return 0;
+      }
+
+      // ================= 生成赛程 =================
+      function generate() {
+        var n = players.length;
+        if (n < 4) { alert('请至少添加 4 名球员'); return null; }
+
+        var courts = Math.max(1, parseInt($('courtCount').value, 10) || 1);
+        var roundCount = Math.max(1, Math.min(100, parseInt($('roundCount').value, 10) || 1));
+        var maxConsec = parseInt($('maxConsec').value, 10);
+        if (isNaN(maxConsec) || maxConsec < 0) maxConsec = 0;
+        if (maxConsec > 20) maxConsec = 20;
+        var maxRest = parseInt($('maxRest').value, 10);
+        if (isNaN(maxRest) || maxRest < 0) maxRest = 0;
+        if (maxRest > 20) maxRest = 20;
+
+        var perRound = courts * 4;
+        if (perRound > n) {
+          alert('每轮需要 ' + perRound + ' 人上场，但只有 ' + n + ' 名球员，请减少场地数。');
+          return null;
+        }
+
+        var restCount = n - perRound;
+
+        // 构建休息组合池
+        var pool = null, poolUsed = null;
+        if (restCount > 0) {
+          var total = combCount(n, restCount);
+          if (total <= 5000) {
+            pool = generateCombinations(n, restCount, 5000);
+            poolUsed = new Array(pool.length).fill(0);
+          }
+        }
+
+        var pc = new Array(n).fill(0);
+        var playStreak = new Array(n).fill(0);
+        var maxPlayStreak = new Array(n).fill(0);
+        var restStreak = new Array(n).fill(0);
+
+        var partner = [], opp = [], i;
+        for (i = 0; i < n; i++) {
+          partner.push(new Array(n).fill(0));
+          opp.push(new Array(n).fill(0));
+        }
+        var sigSet = new Set();
+
+        var result = [];
+        var violationCount = 0;
+
+        for (var r = 0; r < roundCount; r++) {
+          var sel = selectPlayers(n, pc, playStreak, restStreak, perRound, maxConsec, maxRest, pool, poolUsed);
+
+          // 统计违规（如果从池中选了不满足约束的组合）
+          var playing = new Array(n).fill(false);
+          sel.forEach(function (k) { playing[k] = true; });
+          for (i = 0; i < n; i++) {
+            if (playing[i] && maxConsec > 0 && playStreak[i] + 1 > maxConsec) violationCount++;
+            if (!playing[i] && maxRest > 0 && restStreak[i] + 1 > maxRest) violationCount++;
+          }
+
+          var groups = formCourts(sel, partner, opp, sigSet);
+
+          for (i = 0; i < n; i++) {
+            if (playing[i]) {
+              pc[i]++;
+              playStreak[i]++;
+              if (playStreak[i] > maxPlayStreak[i]) maxPlayStreak[i] = playStreak[i];
+              restStreak[i] = 0;
+            } else {
+              playStreak[i] = 0;
+              restStreak[i]++;
+            }
+          }
+          groups.forEach(function (g) {
+            var a = g[0], b = g[1], c = g[2], d = g[3];
+            partner[a][b]++; partner[b][a]++;
+            partner[c][d]++; partner[d][c]++;
+            [[a, c], [a, d], [b, c], [b, d]].forEach(function (p) {
+              opp[p[0]][p[1]]++; opp[p[1]][p[0]]++;
+            });
+            sigSet.add(matchSig(a, b, c, d));
+          });
+
+          result.push(groups);
+        }
+
+        // 汇总
+        var play = new Array(n).fill(0);
+        var partnerSet = [], oppSet = [];
+        for (i = 0; i < n; i++) { partnerSet.push({}); oppSet.push({}); }
+        var usedCombos = 0;
+
+        result.forEach(function (groups) {
+          groups.forEach(function (g) {
+            var a = g[0], b = g[1], c = g[2], d = g[3];
+            [a, b, c, d].forEach(function (x) { play[x]++; });
+            partnerSet[a][b] = 1; partnerSet[b][a] = 1;
+            partnerSet[c][d] = 1; partnerSet[d][c] = 1;
+            [[a, c], [a, d], [b, c], [b, d]].forEach(function (p) {
+              oppSet[p[0]][p[1]] = 1; oppSet[p[1]][p[0]] = 1;
+            });
+          });
+        });
+
+        if (poolUsed) {
+          for (i = 0; i < poolUsed.length; i++) if (poolUsed[i] > 0) usedCombos++;
+        }
+
+        return {
+          result: result, play: play,
+          partnerSet: partnerSet, oppSet: oppSet,
+          maxPlayStreak: maxPlayStreak,
+          roundCount: roundCount,
+          poolSize: pool ? pool.length : 0,
+          usedCombos: usedCombos,
+          violationCount: violationCount
+        };
+      }
+
+      // ================= 渲染 =================
+      function renderResult(data) {
+        var html = '';
+        data.result.forEach(function (groups, r) {
+          html += '<div class="round"><div class="round-title">第 ' + (r + 1) + ' 轮</div>';
+          groups.forEach(function (g, ci) {
+            html += '<div class="court">' +
+              '<span class="cname">场地' + (ci + 1) + '</span>' +
+              '<span class="team ta">' + nameTag(players[g[0]]) + ' + ' + nameTag(players[g[1]]) + '</span>' +
+              '<span class="vs">VS</span>' +
+              '<span class="team tb">' + nameTag(players[g[2]]) + ' + ' + nameTag(players[g[3]]) + '</span>' +
+              '</div>';
+          });
+          html += '</div>';
+        });
+        $('resultArea').innerHTML = html;
+        $('resultCard').style.display = 'block';
+      }
+
+      function renderStats(data) {
+        var n = players.length;
+        var rows = [];
+        for (var i = 0; i < n; i++) {
+          rows.push({
+            name: players[i].name,
+            gender: players[i].gender,
+            play: data.play[i],
+            rest: data.roundCount - data.play[i],
+            maxStreak: data.maxPlayStreak[i],
+            pn: Object.keys(data.partnerSet[i]).length,
+            on: Object.keys(data.oppSet[i]).length
+          });
+        }
+        rows.sort(function (a, b) {
+          return b.play - a.play || a.name.localeCompare(b.name, 'zh');
+        });
+
+        var html = '<div class="table-wrap"><table><thead><tr>' +
+          '<th>球员</th><th>上场</th><th>休息</th><th>最长连打</th><th>搭档</th><th>对手</th>' +
+          '</tr></thead><tbody>';
+        rows.forEach(function (r) {
+          html += '<tr><td>' + nameTag({ name: r.name, gender: r.gender }) + '</td>' +
+            '<td><b>' + r.play + '</b></td>' +
+            '<td>' + r.rest + '</td>' +
+            '<td>' + r.maxStreak + '</td>' +
+            '<td>' + r.pn + '</td>' +
+            '<td>' + r.on + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+
+        var plays = rows.map(function (r) { return r.play; });
+        var mn = Math.min.apply(null, plays), mx = Math.max.apply(null, plays);
+        var gap = mx - mn;
+        var tip = gap <= 1 ? '✅ 上场非常均衡' : (gap <= 2 ? '👍 上场基本均衡' : '⚠️ 人数与轮次组合导致略有差异');
+
+        var totalPairs = n * (n - 1) / 2;
+        var pCov = 0, oCov = 0;
+        for (var a = 0; a < n; a++) {
+          for (var b = a + 1; b < n; b++) {
+            if (data.partnerSet[a][b]) pCov++;
+            if (data.oppSet[a][b]) oCov++;
+          }
+        }
+        var pPct = Math.round(pCov / totalPairs * 100);
+        var oPct = Math.round(oCov / totalPairs * 100);
+
+        var streaks = rows.map(function (r) { return r.maxStreak; });
+        var maxS = Math.max.apply(null, streaks);
+        var minS = Math.min.apply(null, streaks);
+        var sTip = (maxS === minS) ? '连打次数完全一致' : ('最长连打 ' + minS + '~' + maxS + ' 场');
+
+        var comboLine = '';
+        if (data.poolSize > 0) {
+          var cPct = Math.round(data.usedCombos / data.poolSize * 100);
+          comboLine = '<span class="cov">休息组合：<b>' + data.usedCombos + '/' + data.poolSize + '</b> 种（' + cPct + '%）</span>';
+        }
+
+        var violLine = '';
+        if (data.violationCount > 0) {
+          violLine = '<br><span class="warn">⚠️ 有 ' + data.violationCount + ' 次连续上场/休息略微超出设定，可尝试放宽约束或增加轮数</span>';
+        }
+
+        html += '<div class="fair">' +
+          '上场次数区间：<b>' + mn + ' ~ ' + mx + '</b> 次 · ' + tip + '<br>' +
+          '连续上场：' + sTip + '<br>' +
+          '<span class="cov">搭档覆盖：<b>' + pCov + '/' + totalPairs + '</b> 对（' + pPct + '%）</span>' +
+          '<span class="cov">对战覆盖：<b>' + oCov + '/' + totalPairs + '</b> 对（' + oPct + '%）</span>' +
+          comboLine + violLine +
+          '</div>';
+
+        $('statsArea').innerHTML = html;
+        $('statsCard').style.display = 'block';
+      }
+
+      $('genBtn').onclick = function () {
+        var data = generate();
+        if (!data) return;
+        renderResult(data);
+        renderStats(data);
+        try {
+          $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (e) {
+          $('resultCard').scrollIntoView();
+        }
+      };
+
+      // 初始化
+      renderPlayers();
+    })();
+  </script>
+</body>
+
+</html>
